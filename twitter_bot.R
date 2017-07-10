@@ -22,16 +22,33 @@ tweet.txt = gsub("[^[:space:]]*…$", "", tweet.txt)
 
 tweet.txt = tweet.txt %>% removePunctuation %>% removeNumbers %>% tolower
 
-tweet_sentiments = function(tweet.txt) {
+tweet_sentiments = function(twt) {
+  # split by word
   tweet.df = data.frame(do.call(rbind, strsplit(twt, " ", fixed=TRUE)), stringsAsFactors = FALSE)
+  # transpose
   tweet.tidy = tweet.df %>% gather() 
-  tweet.tidy = tweet.tidy %>% mutate(index = 1:nrow(tweet.tidy)) %>% select(-key)
   
-  sentiment = inner_join(get_sentiments("nrc"), tweet.tidy, by = c("word" = "value"))
+  # avoid empty tweet
+  if (ncol(tweet.tidy) != 0){
+  
+    # add indices, delete keys
+    tweet.tidy = tweet.tidy %>% mutate(index = 1:nrow(tweet.tidy)) %>% select(-key)
+    # keep common words
+    sentiment = inner_join(get_sentiments("nrc"), tweet.tidy, by = c("word" = "value"))
+     # no matches from lexico
+    if (nrow(sentiment) == 0){
+      return ("NA")  
+    }
+    
+    else{
+      return (sentiment)
+    }
+  }
+  
+  else {
+    return ("NA")
+  }
 }
-
-
-tweet_sentiments = tweet_sentiments(tweet.txt)
 
 
 sentiment = function(tweet_sentiments){
@@ -46,65 +63,103 @@ sentiment = function(tweet_sentiments){
   }
 }
 
+
+name = nytimes
+
 anger_response = function(tweet.txt) {
   responses = c("I'm angry!", "This is ridiculous!", "I'm FURIOUS!", "FUCK THIS!!", "BULLSHIT!!", "You cunt!", "Go fuck yourself!")
-  response = paste("@", twt$screenName, " ", sample(responses, size = 1), sep = "")
-  updateStatus(response, inReplyTo = twt$id)
+  response = sample(responses, size =1)
+
 }
 
 anticipation_response = function(tweet.txt) {
   responses = c("Looking forward to it!", "I've been waiting forever.", "Finally happening", "Fiesta", "Fuck yeah!")
-  response = paste("@", twt$screenName, " ", sample(responses, size = 1), sep = "")
-  updateStatus(response, inReplyTo = twt$id)
+  response = sample(responses, size =1)
+
 }
 
 disgust_response = function(tweet.txt) {
   responses = c("This makes me wanna vomit", "Disgusting", "Repulsive", "Why do such things exist", "eww")
-  response = paste("@", twt$screenName, " ", sample(responses, size = 1), sep = "")
-  updateStatus(response, inReplyTo = twt$id)
+  response = sample(responses, size =1)
+
 }
 
 fear_response = function(tweet.txt) {
   responses = c("Scary", "Holy shit", "SOS", "Peeing in my pants", "Mama", "Horrifying")
-  response = paste("@", twt$screenName, " ", sample(responses, size = 1), sep = "")
-  updateStatus(response, inReplyTo = twt$id)
+  response = sample(responses, size =1)
+
 }
 
 joy_response = function(tweet.txt) {
   responses = c("YAY", "Hoorah", "This calls for a celebration!", "Happy to see that", "Lekker!")
-  response = paste("@", twt$screenName, " ", sample(responses, size = 1), sep = "")
-  updateStatus(response, inReplyTo = twt$id)
+  response = sample(responses, size =1)
+
 }
 
 negative_response = function(tweet.txt) {
   responses = c("Sucks", "I hate this.", "Horrible", "Someone needs to do something about it!", "Disappointed")
-  response = paste("@", twt$screenName, " ", sample(responses, size = 1), sep = "")
-  updateStatus(response, inReplyTo = twt$id)
+  response = sample(responses, size =1)
+
 }
 
 positive_response = function(tweet.txt) {
   responses = c("Feeling hopeful", "The world is a nice place", "Live, Love, Laugh", "Be grateful", "This is great news")
-  response = paste("@", twt$screenName, " ", sample(responses, size = 1), sep = "")
-  updateStatus(response, inReplyTo = twt$id)
+  response = sample(responses, size =1)
+
 }
 
 sadness_response = function(tweet.txt) {
   responses = c("I wish this never happened", "That's horrible", "I can't take this anymore", "This world is a sad place.", "Praying")
-  response = paste("@", twt$screenName, " ", sample(responses, size = 1), sep = "")
-  updateStatus(response, inReplyTo = twt$id)
+  response = sample(responses, size =1)
+
 }
 
 surprise_response = function(tweet.txt) {
   responses = c("WOW", "Unbelievable!", "Holy cow!", "WTF?!", "OMG!")
-  response = paste("@", twt$screenName, " ", sample(responses, size = 1), sep = "")
-  updateStatus(response, inReplyTo = twt$id)
+  response = sample(responses, size =1)
+
 }
 
 trust_response = function(tweet.txt) {
   responses = c("We've got this", "Feeling good about this", "I believe in this world", "We're better tgt", "All for one and one for all")
-  response = paste("@", twt$screenName, " ", sample(responses, size = 1), sep = "")
-  updateStatus(response, inReplyTo = twt$id)
+  response = sample(responses, size =1)
+
 }
 
+tweet_sentiments = tweet_sentiments(tweet.txt)
 
-
+if (tweet_sentiments != "NA"){
+    sentiment = sentiment(tweet_sentiments)
+    
+    if (sentiment == "anger"){
+        response = anger_response()
+    }
+    else if (sentiment == "anticipation"){
+      response = anticipation_response()
+    }
+    else if (sentiment == "fear"){
+      response = fear_response()
+    }
+    else if (sentiment == "anger"){
+      response= anger_response()
+    }
+    else if (sentiment == "disgust"){
+      response= disgust_response()
+    }
+    else if (sentiment == "joy"){
+      response= joy_response()
+    }
+    else if (sentiment == "negative"){
+      response= anger_response()
+    }
+    else if (sentiment == "positive"){
+      response= positive_response()
+    }
+    else if (sentiment == "sadness"){
+      response= sadness_response()
+    }
+    else if (sentiment == "trust"){
+      response= trust_response()
+    }
+  tweet(response)
+}
