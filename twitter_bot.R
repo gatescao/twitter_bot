@@ -6,10 +6,10 @@ library(dplyr)
 library(tm)
 library(tidyr)
 
-consumer_key = "riyT4t1JIlQXSjHa7IQ4cliQI"
-consumer_secret = "JZ6rnj4WRRe7J73mdk7w74TDYiv00ffEX9d3ZJwRRNqYVJuXAh"
-access_token = "810192513940254720-gop8dS0tF6k6yYpr7hOveisKyPq2WCf"
-access_secret = "duOun3m8nPG52UooDeZKpBZUph6bP7A8y6TOeyozgXvRs"
+consumer_key = "F9It0uTd4429SXD3IMjM2C5cV"
+consumer_secret = "hoxkfM1rXY7bt4nrTOKDt7TQI44YZaA4vr3jy4NqeM4FW7RvBZ"
+access_token = "884381355194417152-GrPTBsMtLCdiLpOwW9nTrBdxVnSqXpf"
+access_secret = "xmdrM6WInjSNuXqUgEng9qo9kJlstb0jUOnpX6shQmEFM"
 setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
 
 
@@ -128,7 +128,7 @@ trust_response = function(tweet.txt) {
 
 tweet_sentiments = tweet_sentiments(tweet.txt)
 
-if (tweet_sentiments != "NA"){
+if (is.data.frame(tweet_sentiments)){
     sentiment = sentiment(tweet_sentiments)
     
     if (sentiment == "anger"){
@@ -160,6 +160,7 @@ if (tweet_sentiments != "NA"){
     }
     else if (sentiment == "trust"){
       response= trust_response()
+
+    tweet(response)
     }
-  tweet(response)
 }
