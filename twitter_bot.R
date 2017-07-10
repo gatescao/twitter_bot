@@ -161,6 +161,10 @@ if (is.data.frame(tweet_sentiments)){
     else if (sentiment == "trust"){
       response= trust_response()
     }
+    else if (sentiment == "surprise") {
+      response = surprise_response()
+    }
+      
     response = paste("@nytimes", response, sep=" ")
     updateStatus(text=response, inReplyTo = last_tweet$id)
 }
