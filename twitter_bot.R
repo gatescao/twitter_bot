@@ -123,7 +123,6 @@ surprise_response = function(tweet.txt) {
 trust_response = function(tweet.txt) {
   responses = c("We've got this", "Feeling good about this", "I believe in this world", "We're better tgt", "All for one and one for all")
   response = sample(responses, size =1)
-
 }
 
 tweet_sentiments = tweet_sentiments(tweet.txt)
@@ -132,7 +131,7 @@ if (is.data.frame(tweet_sentiments)){
     sentiment = sentiment(tweet_sentiments)
     
     if (sentiment == "anger"){
-        response = anger_response()
+      response = anger_response()
     }
     else if (sentiment == "anticipation"){
       response = anticipation_response()
@@ -160,6 +159,10 @@ if (is.data.frame(tweet_sentiments)){
     }
     else if (sentiment == "trust"){
       response= trust_response()
+    }
+    
+    else if (sentiment == "surprise"){
+      response= surprise_response()
     }
     response = paste("@nytimes", response, sep=" ")
     updateStatus(text=response, inReplyTo = last_tweet$id)
